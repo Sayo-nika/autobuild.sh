@@ -52,10 +52,10 @@ fi
 
 if ! [ exit != 0 ]; then
    echo "Build Successfully made. Find it at $DIRECTORY/build/$DIRECTORY-dists or similar. Happy modding!"
-   exit 0
+   exit 0;
 else 
-  echo "Uh oh, we can't build your mod in $DIRECTORY. If this is a mistake, file a issue. Thank you."
-  exit 1;
+   echo "Uh oh, we can't build your mod in $DIRECTORY. If this is a mistake, file a issue. Thank you."
+   exit 1;
 fi
 
 # This pulls from the Sayonika-maintained S3 Storage for the DDLC base content.
