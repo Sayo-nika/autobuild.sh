@@ -33,7 +33,7 @@ if [[ ! -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]]; then
     rm -rf renpy-6.99.12.4-sdk
     pull_ddlc_base;
     cd $DIRECTORY/build/renpy 
-    ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"
+    ./renpy.sh "$DIRECTORY/build/mod/" lint$1 && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
     cd ..
 else
     mkdir -p build$1
@@ -46,14 +46,14 @@ else
     rm -rf renpy-6.99.12.4-sdk
     pull_ddlc_base;
     cd $DIRECTORY/build/renpy
-    ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"
+    ./renpy.sh "$DIRECTORY/build/mod/" lint$1 && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
     cd ..
 fi
 
 exit $?
 
 if ! [ exit != 0 ]; then
-   echo "Build Successfully made. Find it at $DIRECTORY/build/$DIRECTORY-dists or similar. Happy modding!"
+   echo "Build Successfully made. Find it at $DIRECTORY/build/ModXY-dists or similar. Happy modding!"
    exit 0;
 else 
    echo "Uh oh, we can't build your mod in $DIRECTORY. If this is a mistake, file a issue. Thank you."
