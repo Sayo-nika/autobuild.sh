@@ -23,9 +23,9 @@ echo "Thanks, and have a nice day!"
 sleep 3;
 
 if [[ ! -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]]; then
-    mkdir -p $DIRECTORY/build
+    mkdir -p $DIRECTORY/build$1
     mkdir -p $DIRECTORY/build/mod
-    cp -vRf $DIRECTORY/* $DIRECTORY/build/mod
+    cp -vRf $DIRECTORY/*$1 $DIRECTORY/build/mod
     cd $DIRECTORY/build
     tar xf renpy-6.99.12.4-sdk.tar.bz2
     rm renpy-6.99.12.4-sdk.tar.bz2
@@ -36,8 +36,8 @@ if [[ ! -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]]; then
     ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"
     cd ..
 else
-    mkdir -p build
-    cp -vRf $DIRECTORY/* $DIRECTORY/mod
+    mkdir -p build$1
+    cp -vRf $DIRECTORY/*$1 $DIRECTORY/mod
     cd $DIRECTORY
     wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
     tar xf renpy-6.99.12.4-sdk.tar.bz2
@@ -49,6 +49,8 @@ else
     ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"
     cd ..
 fi
+
+exit $?
 
 if ! [ exit != 0 ]; then
    echo "Build Successfully made. Find it at $DIRECTORY/build/$DIRECTORY-dists or similar. Happy modding!"
