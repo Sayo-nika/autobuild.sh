@@ -14,7 +14,25 @@ echo " GitHub: https://github.com/Sayo-nika/autobuild.sh"
 echo " Bug reports : https://github.com/Sayo-nika/autobuild.sh/issues/new"
 echo ""
 
+regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+
 read -p "Enter your mod's Location: " DIRECTORY
+
+# Really needed Type Checks
+
+input="$DIRECTORY"
+check="$(printf $DIRECTORY | grep $regex)"
+
+if [ -z "$check" ]; then
+  echo "Script does not support HTTP sources. Try again."
+  read -p "Enter your mod's Location: " DIRECTORY
+fi
+
+if [ -z "$input" ]; then
+  echo "Input cannot be empty. Try again."
+  read -p "Enter your mod's Location: " DIRECTORY
+fi
+  
 
 echo "Building Mod in $DIRECTORY"
 echo "If you have this builder script inside your own project folder, make sure you input your folder as ../FOLDERNAME or use '.'."
