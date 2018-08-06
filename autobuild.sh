@@ -39,18 +39,18 @@ echo "Thanks, and have a nice day!"
 sleep 3;
 
 if [[ -d "$DIRECTORY/build" ]]; then
-   echo "Build directory exists. I'm not assuming  the files exist so checking right now."
+   echo "Looks like this has built before. Checking if files exists"
    if [[ -f "$DIRECTORY/build/mc" && -d "$DIRECTORY/mod" && -d "$DIRECTORY/renpy" ]] ; then
       echo "Looks like this has been built before. Rebuilding game instead."
-      cp -vRf $DIRECTORY/* $DIRECTORY/mod$1
+      cp -vRf $DIRECTORY/* $DIRECTORY/build/mod/
       cd $DIRECTORY/build/renpy
-      ./renpy.sh "$DIRECTORY/build/mod/" lint$1 && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
+      ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
       cd ..
     else
-      echo "Looks like it's your first time building this mod. Sit back and watch the fireworks."
+      echo "Looks like it's your first time building this mod. Here, I'll make it up to you~!"
       if [[ -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]]; then
           mkdir -p $DIRECTORY/build/mod
-          cp -vRf $DIRECTORY/* $DIRECTORY/build/mod$1
+          cp -vRf $DIRECTORY/* $DIRECTORY/build/mod/
           cd $DIRECTORY/build
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
@@ -58,20 +58,20 @@ if [[ -d "$DIRECTORY/build" ]]; then
           rm -rf renpy-6.99.12.4-sdk
           pull_ddlc_base;
           cd $DIRECTORY/build/renpy 
-          ./renpy.sh "$DIRECTORY/build/mod/" lint$1 && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
+          ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
           cd ..
        else
-          mkdir -p $DIRECTORY/build$1
-          cp -vRf $DIRECTORY/* $DIRECTORY/mod$1
+          mkdir -p $DIRECTORY/build
+          cp -vRf $DIRECTORY/* $DIRECTORY/build/mod/
           cd $DIRECTORY
-          wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2$1
+          wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
           pull_ddlc_base;
           cd $DIRECTORY/build/renpy
-          ./renpy.sh "$DIRECTORY/build/mod/" lint$1 && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
+          ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
           cd ..
        fi
     fi
