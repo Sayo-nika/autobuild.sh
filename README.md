@@ -1,5 +1,6 @@
 # autobuild.sh
-Make DDLC Mod Building as easy as breathing air!
+
+A simple nifty tool to build your mod in just one go!
 
 ## How to use
 
@@ -19,4 +20,6 @@ If you think you can make this better, send us a PR! We love you.
 
 ## Disclaimer
 
-The following source code is licensed under MIT. Copyright 2018&copy; The Sayo
+The following source code is licensed under MIT. Copyright 2018&copy; The Sayonika Project Authors
+
+This script complies with the Team Salvato IP Guidelines.
