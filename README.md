@@ -5,11 +5,12 @@ Make DDLC Mod Building as easy as breathing air!
 
 Simply `git pull` and run it. It's easy.
 
-Or, if you're just doing it once:
+Or, if you don't have git:
 
 ```sh
 
-bash | wget https://raw.githubusercontent.com/Sayo-nika/autobuild.sh/master/autobuild.sh
+wget https://raw.githubusercontent.com/Sayo-nika/autobuild.sh/master/autobuild.sh && bash autobuild.sh
+
 ````
 
 ## Contributing
@@ -18,8 +19,4 @@ If you think you can make this better, send us a PR! We love you.
 
 ## Disclaimer
 
-The following source code is licensed under MIT. Copyright 2018&copy; The Sayonika Project Authors. 
-
-Intended for Doki Doki Literature Club Mods. The following script is within and outside the scope of the IP Guidelines of Team
-Salvato. 
-
+The following source code is licensed under MIT. Copyright 2018&copy; The Sayo
