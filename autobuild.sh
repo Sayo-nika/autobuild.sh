@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -o
 
 # Copyright 2018(c) The Sayonika Project Authors
 # Licensed under MIT.
