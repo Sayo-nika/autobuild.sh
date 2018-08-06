@@ -1,12 +1,14 @@
 #!/bin/bash
 
+set -e
+
 # Copyright 2018(c) The Sayonika Project Authors
 # Licensed under MIT.
 
 echo " ==================================================="
 echo "|   Welcome to Sayonika RenPy DDLC Mod Autobuilder  |"
 echo "|                                                   |"
-echo "|                    V 1.0.0                        |"
+echo "|                    V 1.0.1                        |"
 echo "|               Licensed under MIT                  |"
 echo " ==================================================="
 echo ""
