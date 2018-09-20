@@ -36,8 +36,9 @@ case "$os" in
        installaton_dir_steam="/home/$(whoami)/.local/Steam/steamapps/"
        ;;
     windows)
-       installation_dir=""
-       installaton_dir_steam=""
+       installation_dir="/c/Program Files (x86)/Doki Doki Literature Club"
+       # Let's assume Steam is installed in C:\
+       installaton_dir_steam="/c/Program Files (x86)/Steam/steamapps/common/Doki Doki Literature Club"
        ;;
     darwin)
        installation_dir=""
