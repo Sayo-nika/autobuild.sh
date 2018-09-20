@@ -44,7 +44,7 @@ case "$os" in
        installaton_dir_steam=""
        ;;
     *)
-      echo "! -- autobuild.sh does not support $os."
+      echo "! -- $0 does not support $os."
       exit 1
       ;;
 esac
