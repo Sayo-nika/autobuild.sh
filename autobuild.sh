@@ -51,7 +51,7 @@ case "$os" in
           echo "! -- Autobuild only works at user accounts, not root!"
           exit 2;
         else
-          installation_dir=""
+          installation_dir="/home/$(whoami)/Library/Application Support/itch/apps/Doki Doki Literature Club"
           installaton_dir_steam=""
         fi
        ;;
