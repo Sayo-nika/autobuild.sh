@@ -113,6 +113,7 @@ pull_ddlc_base() {
     else 
       echo " ---> Found $installation_dir. Copying files over."
       cp -vR "$installation_dir/game/*.rpa" $DIRECTORY/build/mod/game
+    fi
 }
 
 print_help() {
