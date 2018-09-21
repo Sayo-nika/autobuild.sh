@@ -117,9 +117,9 @@ print_ddlc_base() {
       fi
     else
         echo " ---> $installation_dir_steam exists. Pulling resources from there."
-        cp -vR "$installation_dir/game/audio.rpa" "$DIRECTORY/build";
-        cp -vR "$installation_dir/game/images.rpa" "$DIRECTORY/build";
-        cp -vR "$installation_dir/game/fonts.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir_steam/game/audio.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir_steam/game/images.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir_steam/game/fonts.rpa" "$DIRECTORY/build";
    fi
 }
 
