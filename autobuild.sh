@@ -123,8 +123,8 @@ print_help() {
    echo "When no arguments are present, the script starts in interactive mode."
    echo "However, for non-interactive usage, the following is accepted as a argument:"
    echo ""
-   echo "-d <DIRECTORY>      The Directory of the mod to build."
-   echo "-h                  Print this help dialogue."
+   echo "-d --directory <DIRECTORY>      The Directory of the mod to build."
+   echo "-h --help                       Print this help dialogue."
 }
 
 regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
