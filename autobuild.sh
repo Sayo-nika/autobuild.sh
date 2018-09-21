@@ -6,7 +6,7 @@
 echo " ==================================================="
 echo "|   Welcome to Sayonika RenPy DDLC Mod Autobuilder  |"
 echo "|                                                   |"
-echo "|                    V 1.1.0                        |"
+echo "|                 V 2.0.0-alpha                     |"
 echo "|               Licensed under MIT                  |"
 echo " ==================================================="
 echo ""
@@ -14,7 +14,7 @@ echo " GitHub: https://github.com/Sayo-nika/autobuild.sh"
 echo " Bug reports : https://github.com/Sayo-nika/autobuild.sh/issues/new"
 echo ""
 
-
+# Case Switches for cross-platform directory scanning
 uname="$(uname -a)"
 os=
 case "$uname" in
@@ -32,17 +32,28 @@ installaton_dir_steam=
 case "$os" in 
     linux) 
        # TODO: grab all common installation paths per OS.
-       installation_dir="/home/$(whoami)/ddlc/"
-       installaton_dir_steam="/home/$(whoami)/.local/Steam/steamapps/"
+       if [ "$(whoami)" == "root" ]; then
+          echo "! -- Autobuild only works at user accounts, not root!"
+          exit 2;
+        else
+          installation_dir="/home/$(whoami)/ddlc/"
+          installaton_dir_steam="/home/$(whoami)/.local/share/Steam/steamapps/common/doki\ doki\ literature\ club"
+        fi
        ;;
     windows)
+       # Since people uses MSYS or MINGW, we don't need the operands for the UNIX systems.
        installation_dir="/c/Program Files (x86)/Doki Doki Literature Club"
        # Let's assume Steam is installed in C:\
-       installaton_dir_steam="/c/Program Files (x86)/Steam/steamapps/common/Doki Doki Literature Club"
+       installaton_dir_steam="/c/Program Files (x86)/Steam/steamapps/common/Doki\ Doki\ Literature\ Club"
        ;;
     darwin)
-       installation_dir=""
-       installaton_dir_steam=""
+       if [ "$(whoami)" == "root" ]; then
+          echo "! -- Autobuild only works at user accounts, not root!"
+          exit 2;
+        else
+          installation_dir=""
+          installaton_dir_steam=""
+        fi
        ;;
     *)
       echo "! -- $0 does not support $os."
@@ -51,6 +62,8 @@ case "$os" in
 esac
 
 pull_ddlc_base() {
+    # Public S3 Credentials for our filepub bucket.
+    # Feel free to replace this with your own.
     mc_endpoint="https://s3-api.us-geo.objectstorage.softlayer.net"
     mc_hmac_key="aa1d6f56b97443c185d7282c22adc4a7"
     mc_hmac_secret="29fc312082d26720ceeec6e89630f6d2fc382a96c7a72b1c"
@@ -58,33 +71,48 @@ pull_ddlc_base() {
     mc_bucket="filepub"
     mc_filename="ddlc_pkg.zip"
     
-    echo " ---> Checking if Minio S3 is present to pull DDLC resources."
+    echo " ---> Checking if there is a local DDLC installation first."
+    if [ ! -d "$installation_dir" ]; then
+       echo "! -- $installation_dir is nonexistent. Trying Steam install directory.";
+       
+    elif [! -d "$installation_dir_steam" ]; then
+      echo "! -- $installation_dir_steam is nonexistent. Pulling from Remote."
+      echo " ---> Checking if Minio S3 is present to pull DDLC resources."
     
-    if [ -z "$(command -v mc)" ]; then
-      echo " ---> Minio Client not present. Installing Minio S3 Client"
-      wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O $DIRECTORY/build/mc && \
-      chmod +x mc && \
-      export PATH="$DIRECTORY/build:$PATH" && \
-      $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-      $DIRECTORY/build/mc ls $mc_alias;
-      $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
-      unzip  $mc_filename -d $DIRECTORY/build/mod/game
-    elif [ -f "$DIRECTORY/build/mc" ]; then
-      echo "Minio Client present in build. Exporting to PATH."
-      export PATH="$DIRECTORY/build:$PATH" && \
-      $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-      $DIRECTORY/build/mc ls $mc_alias;
-      $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
-      unzip  $mc_filename -d $DIRECTORY/build/mod/game
+      if [ -z "$(command -v mc)" ]; then
+        echo " ---> Minio Client not present. Installing Minio S3 Client"
+        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O $DIRECTORY/build/mc && \
+        chmod +x mc && \
+        export PATH="$DIRECTORY/build:$PATH" && \
+        $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        $DIRECTORY/build/mc ls $mc_alias;
+        $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
+        unzip  $mc_filename -d $DIRECTORY/build/mod/game
+        
+      elif [ -f "$DIRECTORY/build/mc" ]; then
+        echo "Minio Client present in build. Exporting to PATH."
+        export PATH="$DIRECTORY/build:$PATH" && \
+        $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        $DIRECTORY/build/mc ls $mc_alias;
+        $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
+        unzip  $mc_filename -d $DIRECTORY/build/mod/game
+      else 
+        echo " ---> Minio Client exists or Midnight Commander is present."
+        echo " ---> Make sure Midnight Commander isn't installed since it causes issues with this script."
+        $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        # try if it works
+        $DIRECTORY/build/mc ls $mc_alias;
+        $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
+        unzip  $mc_filename -d $DIRECTORY/build/mod/game
+      fi
+      
+    elif [ -d "$installation_dir_steam" ]; then
+      echo " ---> Found $installation_dir_steam. Copying files over."
+      cp -vR "$installation_dir_steam/game/*.rpa" $DIRECTORY/build/mod/game
+    
     else 
-      echo " ---> Minio Client exists or Midnight Commander is present."
-      echo " ---> Make sure Midnight Commander isn't installed since it causes issues with this script."
-      $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-      # try if it works
-      $DIRECTORY/build/mc ls $mc_alias;
-      $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
-      unzip  $mc_filename -d $DIRECTORY/build/mod/game
-    fi
+      echo " ---> Found $installation_dir. Copying files over."
+      cp -vR "$installation_dir/game/*.rpa" $DIRECTORY/build/mod/game
 }
 
 print_help() {
