@@ -77,36 +77,36 @@ pull_base_remote() {
     
     if [ -z "$(command -v mc)" ]; then
         echo " ---> Minio Client not present. Installing Minio S3 Client"
-        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O $DIRECTORY/build/mc && \
+        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O ""$DIRECTORY/build/mc"" && \
         chmod +x mc && \
         export PATH="$DIRECTORY/build:$PATH" && \
-        $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-        $DIRECTORY/build/mc ls $mc_alias;
-        $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
+        ""$DIRECTORY/build/mc"" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        ""$DIRECTORY/build/mc"" ls $mc_alias;
+        ""$DIRECTORY/build/mc"" cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
         unzip  $mc_filename -d $DIRECTORY/build/mod/game
         
-    elif [ -f "$DIRECTORY/build/mc" ]; then
+    elif [ -f ""$DIRECTORY/build/mc"" ]; then
         echo "Minio Client present in build. Exporting to PATH."
         export PATH="$DIRECTORY/build:$PATH" && \
-        $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-        $DIRECTORY/build/mc ls $mc_alias;
-        $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
+        "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        "$DIRECTORY/build/mc" ls $mc_alias;
+        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
         unzip  $mc_filename -d $DIRECTORY/build/mod/game
       else 
         echo " ---> Minio Client exists or Midnight Commander is present."
         echo " ---> Make sure Midnight Commander isn't installed since it causes issues with this script."
-        $DIRECTORY/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
         # try if it works
-        $DIRECTORY/build/mc ls $mc_alias;
-        $DIRECTORY/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
+        "$DIRECTORY/build/mc" ls $mc_alias;
+        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
         unzip  $mc_filename -d $DIRECTORY/build/mod/game
     fi
 }
 
 print_ddlc_base() {
-   if [[ ! -d "$installation_dir_steam" ]]; then
+   if [ ! -d "$installation_dir_steam" ]; then
       echo "! -- $installation_dir_steam does not exist. Trying your local non-steam installation.";
-      if [[ !  -d "$installation_dir" ]]; then
+      if [ !  -d "$installation_dir" ]; then
         echo "! --  $installation_dir does not exist. Pulling from remote instead.";
         pull_base_remote;
       else
@@ -165,18 +165,18 @@ case "$1" in
 esac
 # Really needed Type Checks
 
-while [[ $input =~ $regex || -z $input ]] ; do
+while [ "$input" =~ "$regex" || -z "$input" ] ; do
   echo "! -- Error: Invalid input. Try again."
   read -p "Enter your mod's Location (use . if you have this script inside your mod folder): " input
 done
 
-while [[ ! -d $input ]] ; do
+while [ ! -d "$input" ] ; do
   echo "! -- Error: Directory does not exist. Try a different directory."
   read -p "Enter your mod's Location (use . if you have this script inside your mod folder): " input
 done
 
 
-if [[ $input == '.' ]]; then
+if [ "$input" == '.' ]; then
   echo " ---> Building mod in your PWD context."
   echo " ---> Do you know you can also build other mods with this? Just type the absolute path of the mod and enter. Happy Modding!"
   DIRECTORY="$(pwd)"
@@ -189,9 +189,9 @@ fi
 
 sleep 3;
 
-if [[ -d "$DIRECTORY/build" ]]; then
+if [ -d "$DIRECTORY/build" ]; then
    echo " ---> Looks like this has built before. Checking if files exists"
-   if [[ -f "$DIRECTORY/build/mc" && -d "$DIRECTORY/mod" && -d "$DIRECTORY/renpy" ]] ; then
+   if [ -f ""$DIRECTORY/build/mc"" && -d "$DIRECTORY/mod" && -d "$DIRECTORY/renpy" ] ; then
       echo " ---> Looks like this has been built before. Rebuilding game instead."
       cp -vRf $DIRECTORY/* $DIRECTORY/build/mod
       cd $DIRECTORY/build/renpy
@@ -199,7 +199,7 @@ if [[ -d "$DIRECTORY/build" ]]; then
       cd ..
     else
       echo " ---> Looks like it's your first time building this mod. Here, I'll make it up to you~!"
-      if [[ -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]]; then
+      if [ -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]; then
           mkdir -p $DIRECTORY/build/mod
           cp -vRf $DIRECTORY/* $DIRECTORY/build/mod
           cd $DIRECTORY/build
@@ -244,7 +244,7 @@ else
       cd ..
 fi
 
-case $(exit $?) in 
+case "$(exit $?)" in 
   0) echo " ---> Build Successfully made. Find it at $DIRECTORY/build/ModXY-dists or similar. Happy modding!" && exit 0;
    ;;
   *) echo "! -- Uh oh, we can't build your mod in $DIRECTORY. If this is a mistake, file a issue. Thank you." && exit 1;
