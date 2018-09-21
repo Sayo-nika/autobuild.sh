@@ -29,8 +29,8 @@ case "$uname" in
     MSYS_NT*) os=windows ;;
 esac
 
-installation_dir=
-installaton_dir_steam=
+export installation_dir=
+export installation_dir_steam=
 case "$os" in 
     linux) 
        # TODO: grab all common installation paths per OS.
@@ -39,14 +39,14 @@ case "$os" in
           exit 2;
         else
           installation_dir="$HOME/ddlc/"
-          installaton_dir_steam="$HOME/.local/share/Steam/steamapps/common/doki doki literature club"
+          installation_dir_steam="$HOME/.local/share/Steam/steamapps/common/doki doki literature club"
         fi
        ;;
     windows)
        # Since people uses MSYS or MINGW, we don't need the operands for the UNIX systems.
        installation_dir="$USERPROFILE/Doki Doki Literature Club"
        # Let's assume Steam is installed in C:\
-       installaton_dir_steam="$USERPROFILE/Steam/steamapps/common/Doki Doki Literature Club"
+       installation_dir_steam="$USERPROFILE/Steam/steamapps/common/Doki Doki Literature Club"
        ;;
     darwin)
        if [ "$(id -u)" -eq 0 ]; then
@@ -54,7 +54,7 @@ case "$os" in
           exit 2;
         else
           installation_dir="$HOME/Library/Application Support/itch/apps/Doki Doki Literature Club"
-          installaton_dir_steam=""
+          installation_dir_steam="$HOME/Library/Application Support/steam/steampps/common/Doki Doki Literature Club"
         fi
        ;;
     *)
@@ -73,33 +73,33 @@ pull_base_remote() {
     mc_bucket="filepub"
     mc_filename="ddlc_pkg.zip"
     
-    echo " ---> Checking if Minio S3 is present to pull DDLC resources."
+    printf " ---> Checking if Minio S3 is present to pull DDLC resources.\n"
     
     if [ -z "$(command -v mc)" ]; then
         echo " ---> Minio Client not present. Installing Minio S3 Client"
-        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O ""$DIRECTORY/build/mc"" && \
+        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O "$DIRECTORY/build/mc" && \
         chmod +x mc && \
         export PATH="$DIRECTORY/build:$PATH" && \
         "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
         "$DIRECTORY/build/mc" ls $mc_alias;
-        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
-        unzip  $mc_filename -d $DIRECTORY/build/mod/game
+        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$DIRECTORY/build/"
+        unzip  "$mc_filename" -d "$DIRECTORY/build/mod/game"
         
-    elif [ -f ""$DIRECTORY/build/mc"" ]; then
+    elif [ -f "$DIRECTORY/build/mc" ]; then
         echo "Minio Client present in build. Exporting to PATH."
         export PATH="$DIRECTORY/build:$PATH" && \
         "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
         "$DIRECTORY/build/mc" ls $mc_alias;
-        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
-        unzip  $mc_filename -d $DIRECTORY/build/mod/game
+        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$DIRECTORY/build/"
+        unzip  "$mc_filename" -d "$DIRECTORY/build/mod/game"
       else 
         echo " ---> Minio Client exists or Midnight Commander is present."
         echo " ---> Make sure Midnight Commander isn't installed since it causes issues with this script."
         "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
         # try if it works
-        "$DIRECTORY/build/mc" ls $mc_alias;
-        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
-        unzip  $mc_filename -d $DIRECTORY/build/mod/game
+        "$DIRECTORY/build/mc" ls "$mc_alias";
+        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$DIRECTORY/build/"
+        unzip  $mc_filename -d "$DIRECTORY/build/mod/game"
     fi
 }
 
@@ -111,23 +111,27 @@ print_ddlc_base() {
         pull_base_remote;
       else
         echo " ---> $installation_dir exists. Pulling resources from there."
-        cp -vR "$installation_dir/game/${audio.rpa, images.rpa, fonts.rpa}" $DIRECTORY/build;
+        cp -vR "$installation_dir/game/audio.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir/game/images.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir/game/fonts.rpa" "$DIRECTORY/build";
       fi
     else
-      echo " ---> $installation_dir_steam exists. Pulling resources from there."
-      cp -vR "$installation_dir_steam/game/${audio.rpa, images.rpa, fonts.rpa}" $DIRECTORY/build;
+        echo " ---> $installation_dir_steam exists. Pulling resources from there."
+        cp -vR "$installation_dir/game/audio.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir/game/images.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir/game/fonts.rpa" "$DIRECTORY/build";
    fi
 }
 
 print_help() {
    echo "$0 [-d <DIRECTORY> | -h]"
-   echo ""
-   echo "Builds a mod by creating a build/ folder and compiles releases there."
-   echo "When no arguments are present, the script starts in interactive mode."
-   echo "However, for non-interactive usage, the following is accepted as a argument:"
-   echo ""
-   echo "-d --directory <DIRECTORY>      The Directory of the mod to build."
-   echo "-h --help                       Print this help dialogue."
+   echo ''
+   echo 'Builds a mod by creating a build/ folder and compiles releases there.'
+   echo 'When no arguments are present, the script starts in interactive mode.'
+   echo 'However, for non-interactive usage, the following is accepted as a argument:'
+   echo ''
+   echo '-d --directory <DIRECTORY>      The Directory of the mod to build.'
+   echo '-h --help                       Print this help dialogue.'
 }
 
 regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
@@ -139,7 +143,7 @@ case "$1" in
          print_help
          exit 2;
       else
-        if [ "$2" =~ $regex  ] ||  [ -z "$2" ]; then
+        if [ "$2" =~ "$regex"  ] ||  [ -z "$2" ]; then
           echo "! -- Error: Invalid input. Try again."
           exit 2;
         elif [ ! -d "$2" ]; then
@@ -155,9 +159,9 @@ case "$1" in
       exit 0;
     ;;
   "")
-     read -p "Enter your mod's Location (use . if you have this script inside your mod folder): " input
+     read -p  "Enter your mod's Location (use . if you have this script inside your mod folder): " input
     ;;
-  -* | --*)
+  -*)
       echo "Invalid option $1"
       print_help
       exit 2;
@@ -165,18 +169,18 @@ case "$1" in
 esac
 # Really needed Type Checks
 
-while [ "$input" =~ $regex ] ||  [ -z "$input" ] ; do
+while [ "$input" =~ "$regex" ] ||  [ -z "$input" ] ; do
   echo "! -- Error: Invalid input. Try again."
-  read -p "Enter your mod's Location (use . if you have this script inside your mod folder): " input
+  read -p  "Enter your mod's Location (use . if you have this script inside your mod folder): " input
 done
 
 while [ ! -d "$input" ] ; do
   echo "! -- Error: Directory does not exist. Try a different directory."
-  read -p "Enter your mod's Location (use . if you have this script inside your mod folder): " input
+  read -p  "Enter your mod's Location (use . if you have this script inside your mod folder): " input
 done
 
 
-if [ "$input" == '.' ]; then
+if [ "$input" = '.' ]; then
   echo " ---> Building mod in your PWD context."
   echo " ---> Do you know you can also build other mods with this? Just type the absolute path of the mod and enter. Happy Modding!"
   DIRECTORY="$(pwd)"
@@ -194,7 +198,7 @@ if [ -d "$DIRECTORY/build" ]; then
    if [ -f "$DIRECTORY/build/mc" ] && [ -d "$DIRECTORY/mod" ] &&  [ -d "$DIRECTORY/renpy" ] ; then
       echo " ---> Looks like this has been built before. Rebuilding game instead."
       cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
-      cd "$DIRECTORY/build/renpy"
+      cd "$DIRECTORY/build/renpy" || exit
       ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
       cd ..
     else
@@ -202,27 +206,27 @@ if [ -d "$DIRECTORY/build" ]; then
       if [ -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]; then
           mkdir -p "$DIRECTORY/build/mod"
           cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
-          cd "$DIRECTORY/build"
+          cd "$DIRECTORY/build" || exit
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
           cd "$DIRECTORY/build" && "pull_ddlc_base";
-          cd "$DIRECTORY/build/renpy" 
+          cd "$DIRECTORY/build/renpy" || exit
           ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
           cd ..
        else
           mkdir -p "$DIRECTORY/build"
           mkdir -p "$DIRECTORY/build/mod"
           cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
-          cd "$DIRECTORY"
+          cd "$DIRECTORY" || exit
           wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
           cd "$DIRECTORY/build" && pull_ddlc_base;
-          cd "$DIRECTORY/build/renpy"
+          cd "$DIRECTORY/build/renpy" || exit
           ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
           cd ..
        fi
@@ -232,14 +236,14 @@ else
       mkdir -p "$DIRECTORY/build"
       mkdir -p "$DIRECTORY/build/mod"
       cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
-      cd "$DIRECTORY"
+      cd "$DIRECTORY" || exit
       wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
       tar xf renpy-6.99.12.4-sdk.tar.bz2
       rm renpy-6.99.12.4-sdk.tar.bz2
       mv renpy-6.99.12.4-sdk renpy
       rm -rf renpy-6.99.12.4-sdk
       cd "$DIRECTORY/build" && pull_ddlc_base;
-      cd "$DIRECTORY/build/renpy"
+      cd "$DIRECTORY/build/renpy" || exit
       ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
       cd ..
 fi
