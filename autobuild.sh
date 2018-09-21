@@ -80,9 +80,9 @@ pull_base_remote() {
         wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O ""$DIRECTORY/build/mc"" && \
         chmod +x mc && \
         export PATH="$DIRECTORY/build:$PATH" && \
-        ""$DIRECTORY/build/mc"" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-        ""$DIRECTORY/build/mc"" ls $mc_alias;
-        ""$DIRECTORY/build/mc"" cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
+        "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        "$DIRECTORY/build/mc" ls $mc_alias;
+        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" $DIRECTORY/build/
         unzip  $mc_filename -d $DIRECTORY/build/mod/game
         
     elif [ -f ""$DIRECTORY/build/mc"" ]; then
@@ -134,15 +134,15 @@ regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]
 
 case "$1" in 
  -d | --directory)
-      if [[ -z "$2" ]]; then
+      if [ -z "$2" ]; then
          echo "! -- Error: $1 requires a argument"
          print_help
          exit 2;
       else
-        if [[ $2 =~ $regex || -z $2 ]]; then
+        if [ "$2" =~ $regex  ] ||  [ -z "$2" ]; then
           echo "! -- Error: Invalid input. Try again."
           exit 2;
-        elif [[ ! -d $2 ]]; then
+        elif [ ! -d "$2" ]; then
           echo "! -- Error: Directory does not exist. Try a different directory."
           exit 2;
         else
@@ -165,7 +165,7 @@ case "$1" in
 esac
 # Really needed Type Checks
 
-while [ "$input" =~ "$regex" || -z "$input" ] ; do
+while [ "$input" =~ $regex ] ||  [ -z "$input" ] ; do
   echo "! -- Error: Invalid input. Try again."
   read -p "Enter your mod's Location (use . if you have this script inside your mod folder): " input
 done
@@ -191,56 +191,56 @@ sleep 3;
 
 if [ -d "$DIRECTORY/build" ]; then
    echo " ---> Looks like this has built before. Checking if files exists"
-   if [ -f ""$DIRECTORY/build/mc"" && -d "$DIRECTORY/mod" && -d "$DIRECTORY/renpy" ] ; then
+   if [ -f "$DIRECTORY/build/mc" ] && [ -d "$DIRECTORY/mod" ] &&  [ -d "$DIRECTORY/renpy" ] ; then
       echo " ---> Looks like this has been built before. Rebuilding game instead."
-      cp -vRf $DIRECTORY/* $DIRECTORY/build/mod
-      cd $DIRECTORY/build/renpy
-      ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
+      cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
+      cd "$DIRECTORY/build/renpy"
+      ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
       cd ..
     else
       echo " ---> Looks like it's your first time building this mod. Here, I'll make it up to you~!"
       if [ -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]; then
-          mkdir -p $DIRECTORY/build/mod
-          cp -vRf $DIRECTORY/* $DIRECTORY/build/mod
-          cd $DIRECTORY/build
+          mkdir -p "$DIRECTORY/build/mod"
+          cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
+          cd "$DIRECTORY/build"
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
-          cd $DIRECTORY/build && pull_ddlc_base;
-          cd $DIRECTORY/build/renpy 
-          ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
+          cd "$DIRECTORY/build" && "pull_ddlc_base";
+          cd "$DIRECTORY/build/renpy" 
+          ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
           cd ..
        else
-          mkdir -p $DIRECTORY/build
-          mkdir -p $DIRECTORY/build/mod
-          cp -vRf $DIRECTORY/* $DIRECTORY/build/mod
-          cd $DIRECTORY
+          mkdir -p "$DIRECTORY/build"
+          mkdir -p "$DIRECTORY/build/mod"
+          cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
+          cd "$DIRECTORY"
           wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
-          cd $DIRECTORY/build && pull_ddlc_base;
-          cd $DIRECTORY/build/renpy
-          ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
+          cd "$DIRECTORY/build" && pull_ddlc_base;
+          cd "$DIRECTORY/build/renpy"
+          ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
           cd ..
        fi
     fi
 else 
       echo " ---> Looks like it's your first time building this mod. Here, I'll make it up to you~!"
-      mkdir -p $DIRECTORY/build
-      mkdir -p $DIRECTORY/build/mod
-      cp -vRf $DIRECTORY/* $DIRECTORY/build/mod
-      cd $DIRECTORY
+      mkdir -p "$DIRECTORY/build"
+      mkdir -p "$DIRECTORY/build/mod"
+      cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
+      cd "$DIRECTORY"
       wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
       tar xf renpy-6.99.12.4-sdk.tar.bz2
       rm renpy-6.99.12.4-sdk.tar.bz2
       mv renpy-6.99.12.4-sdk renpy
       rm -rf renpy-6.99.12.4-sdk
-      cd $DIRECTORY/build && pull_ddlc_base;
-      cd $DIRECTORY/build/renpy
-      ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/"$1
+      cd "$DIRECTORY/build" && pull_ddlc_base;
+      cd "$DIRECTORY/build/renpy"
+      ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
       cd ..
 fi
 
