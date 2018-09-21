@@ -37,14 +37,14 @@ case "$os" in
           exit 2;
         else
           installation_dir="/home/$(whoami)/ddlc/"
-          installaton_dir_steam="/home/$(whoami)/.local/share/Steam/steamapps/common/doki\ doki\ literature\ club"
+          installaton_dir_steam="/home/$(whoami)/.local/share/Steam/steamapps/common/doki doki literature club"
         fi
        ;;
     windows)
        # Since people uses MSYS or MINGW, we don't need the operands for the UNIX systems.
        installation_dir="/c/Program Files (x86)/Doki Doki Literature Club"
        # Let's assume Steam is installed in C:\
-       installaton_dir_steam="/c/Program Files (x86)/Steam/steamapps/common/Doki\ Doki\ Literature\ Club"
+       installaton_dir_steam="/c/Program Files (x86)/Steam/steamapps/common/Doki Doki Literature Club"
        ;;
     darwin)
        if [ "$(whoami)" == "root" ]; then
