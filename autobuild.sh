@@ -22,6 +22,8 @@ case "$uname" in
     Darwin\ *) os=darwin ;;
     SunOS\ *) os=sunos ;;
     FreeBSD\ *) os=freebsd ;;
+    OpenBSD\ *) os=openbsd ;;
+    DragonflyBSD\ *) os=dragonflybsd ;;
     CYGWIN*) os=windows ;;
     MINGW*) os=windows ;;
     MSYS_NT*) os=windows ;;
@@ -32,26 +34,26 @@ installaton_dir_steam=
 case "$os" in 
     linux) 
        # TODO: grab all common installation paths per OS.
-       if [ "$(whoami)" == "root" ]; then
+       if [ "$(id -u)" -eq 0 ]; then
           echo "! -- Autobuild only works at user accounts, not root!"
           exit 2;
         else
-          installation_dir="/home/$(whoami)/ddlc/"
-          installaton_dir_steam="/home/$(whoami)/.local/share/Steam/steamapps/common/doki doki literature club"
+          installation_dir="$HOME/ddlc/"
+          installaton_dir_steam="$HOME/.local/share/Steam/steamapps/common/doki doki literature club"
         fi
        ;;
     windows)
        # Since people uses MSYS or MINGW, we don't need the operands for the UNIX systems.
-       installation_dir="/c/Program Files (x86)/Doki Doki Literature Club"
+       installation_dir="$USERPROFILE/Doki Doki Literature Club"
        # Let's assume Steam is installed in C:\
-       installaton_dir_steam="/c/Program Files (x86)/Steam/steamapps/common/Doki Doki Literature Club"
+       installaton_dir_steam="$USERPROFILE/Steam/steamapps/common/Doki Doki Literature Club"
        ;;
     darwin)
-       if [ "$(whoami)" == "root" ]; then
+       if [ "$(id -u)" -eq 0 ]; then
           echo "! -- Autobuild only works at user accounts, not root!"
           exit 2;
         else
-          installation_dir="/home/$(whoami)/Library/Application Support/itch/apps/Doki Doki Literature Club"
+          installation_dir="$HOME/Library/Application Support/itch/apps/Doki Doki Literature Club"
           installaton_dir_steam=""
         fi
        ;;
@@ -130,7 +132,7 @@ print_help() {
 
 regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 
-case $1 in 
+case "$1" in 
  -d | --directory)
       if [[ -z "$2" ]]; then
          echo "! -- Error: $1 requires a argument"
