@@ -6,7 +6,7 @@
 echo " ==================================================="
 echo "|   Welcome to Sayonika RenPy DDLC Mod Autobuilder  |"
 echo "|                                                   |"
-echo "|                 V 2.0.0-alpha                     |"
+echo "|                    V 2.0.0                        |"
 echo "|               Licensed under MIT                  |"
 echo " ==================================================="
 echo ""
