@@ -1,18 +1,19 @@
 #!/bin/sh
 
-# Copyright 2018(c) The Sayonika Project Authors
-# Licensed under MIT.
+#~  ===================================================
+#~ |   Welcome to Sayonika RenPy DDLC Mod Autobuilder  |
+#~ |                                                   |
+#~ |                    V 2.0.0                        |
+#~ |               Licensed under MIT                  |
+#~  ===================================================
+#~
+#~    GitHub: https://github.com/Sayo-nika/autobuild.sh
+#~  Bug reports : https://github.com/Sayo-nika/autobuild.sh/issues/new
+#~
 
-echo " ==================================================="
-echo "|   Welcome to Sayonika RenPy DDLC Mod Autobuilder  |"
-echo "|                                                   |"
-echo "|                    V 2.0.0                        |"
-echo "|               Licensed under MIT                  |"
-echo " ==================================================="
-echo ""
-echo " GitHub: https://github.com/Sayo-nika/autobuild.sh"
-echo " Bug reports : https://github.com/Sayo-nika/autobuild.sh/issues/new"
-echo ""
+# Better way to print the shit above
+# Thanks to arswright at Discord for the protip!
+cat "$0" | grep -E '#~'
 
 # Case Switches for cross-platform directory scanning
 uname="$(uname -a)"
@@ -133,7 +134,6 @@ print_help() {
    echo '-d --directory <DIRECTORY>      The Directory of the mod to build.'
    echo '-h --help                       Print this help dialogue.'
 }
-
 regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 
 case "$1" in 
