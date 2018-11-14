@@ -205,6 +205,7 @@ if [ -d "$input/build" ]; then
     else
       echo " ---> Looks like it's your first time building this mod. Here, I'll make it up to you~!"
       if [ -f "$input/build/renpy-6.99.12.4-sdk.tar.bz2" ]; then
+          mkdir -p "$input/build"
           mkdir -p "$input/build/mod"
           cp -vRf "$input/*" "$input/build/mod"
           cd "$input/build" || exit
