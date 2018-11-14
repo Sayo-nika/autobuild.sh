@@ -1,0 +1,15 @@
+language: python
+python:
+    - "2.7"
+
+sudo: required
+
+install:
+    - cd ..
+    - git clone https://github.com/Sayo-nika/BraveSail
+
+env:
+
+    - SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy
+
+script: ./autobuild.sh/autobuild.sh -d BraveSail && ls BraveSail/build 
