@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #~  ===================================================
 #~ |   Welcome to Sayonika RenPy DDLC Mod Autobuilder  |
@@ -12,8 +12,7 @@
 #~
 
 # Better way to print the shit above
-# Thanks to arswright at Discord for the protip!
-cat "$0" | grep -E '#~'
+cat "$0" | grep -E '#~' | sed -n 'x;/cat^.*/!g;//!p';
 
 # Case Switches for cross-platform directory scanning
 uname="$(uname -a)"
@@ -77,7 +76,7 @@ pull_base_remote() {
     
     printf " ---> Checking if Minio S3 is present to pull DDLC resources.\n"
     
-    if [ ! -n "$(command -v mc)" ]; then
+    if [ -z "$(command -v mc)" ]; then
         echo " ---> Minio Client not present. Installing Minio S3 Client"
         wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O "$DIRECTORY/build/mc" && \
         chmod +x mc && \
@@ -107,7 +106,7 @@ pull_base_remote() {
 
 print_ddlc_base() {
    if [ ! -d "$installation_dir_steam" ]; then
-      if [ "$os" -eq "linux" ]; then
+      if [ "$os" = "linux" ]; then
          "! -- Skipping vanilla installation dir. Pulling from remote now."
         pull_base_remote;
       fi 
@@ -148,7 +147,7 @@ case "$1" in
          print_help
          exit 2;
       else
-        if [ echo "$2" | grep $regex >/dev/null 2>&1 ] ||  [ -z "$2" ]; then
+        if [ $(echo $2 | grep $regex >/dev/null 2>&1) ] ||  [ -z "$2" ]; then
           echo "! -- Error: Invalid input. Try again."
           exit 2;
         elif [ ! -d "$2" ]; then
@@ -174,7 +173,7 @@ case "$1" in
 esac
 # Really needed Type Checks
 
-while [ echo "$input" | grep $regex >/dev/null 2>&1 ]  ||  [ ! -n "$input" ] ; do
+while [ $(echo $input | grep $regex >/dev/null 2>&1) ]  ||  [ -z "$input" ] ; do
   echo "! -- Error: Invalid input. Try again."
   read -p  "Enter your mod's Location (use . if you have this script inside your mod folder): " input
 done
