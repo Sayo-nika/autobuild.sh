@@ -12,4 +12,4 @@ env:
 
     - SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy
 
-script: ./autobuild.sh/autobuild.sh -d ./BraveSail && ls BraveSail/build 
+script:  ls && ./autobuild.sh/autobuild.sh -d BraveSail && ls BraveSail/build 
