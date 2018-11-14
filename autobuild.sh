@@ -96,10 +96,10 @@ pull_base_remote() {
       else 
         echo " ---> Minio Client exists or Midnight Commander is present."
         echo " ---> Make sure Midnight Commander isn't installed since it causes issues with this script."
-        "$input/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        $(command -v mc) config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
         # try if it works
-        "$input/build/mc" ls "$mc_alias";
-        "$input/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$input/build/"
+        $(command -v mc) ls "$mc_alias";
+        $(command -v mc) cp "$mc_alias/$mc_bucket/$mc_filename" "$input/build/"
         unzip  $mc_filename -d "$input/build/mod/game"
     fi
 }
