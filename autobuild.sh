@@ -106,7 +106,7 @@ pull_base_remote() {
 
 pull_ddlc_base() {
    if [ ! -d "$installation_dir_steam" ]; then
-      if [ "$os" -eq "linux" ]; then
+      if [ "$os" = "linux" ]; then
          "! -- Skipping vanilla installation dir. Pulling from remote now."
         pull_base_remote;
       fi 
@@ -198,16 +198,16 @@ if [ -d "$input/build" ]; then
    echo " ---> Looks like this has built before. Checking if files exists"
    if [ -f "$input/build/mc" ] && [ -d "$input/mod" ] &&  [ -d "$input/renpy" ] ; then
       echo " ---> Looks like this has been built before. Rebuilding game instead."
-      cp -vRf "$input/*" "$input/build/mod"
+      cp -vRf "$input"/* "$input/build/mod"
       cd "$input/build/renpy" || exit
-      ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
+      ./renpy.sh "../build/mod/" lint && ./renpy.sh launcher distribute "../build/mod/""$1"
       cd ..
     else
       echo " ---> Looks like it's your first time building this mod. Here, I'll make it up to you~!"
       if [ -f "$input/build/renpy-6.99.12.4-sdk.tar.bz2" ]; then
           mkdir -p "$input/build"
           mkdir -p "$input/build/mod"
-          cp -vRf "$input/*" "$input/build/mod"
+          cp -vRf "$input"/* "$input/build/mod"
           cd "$input/build" || exit
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
@@ -220,7 +220,7 @@ if [ -d "$input/build" ]; then
        else
           mkdir -p "$input/build"
           mkdir -p "$input/build/mod"
-          cp -vRf "$input/*" "$input/build/mod"
+          cp -vRf "$input"/* "$input/build/mod"
           cd "$input" || exit
           wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
           tar xf renpy-6.99.12.4-sdk.tar.bz2
@@ -237,7 +237,7 @@ else
       echo " ---> Looks like it's your first time building this mod. Here, I'll make it up to you~!"
       mkdir -p "$input/build"
       mkdir -p "$input/build/mod"
-      cp -vRf "$input/*" "$input/build/mod"
+      cp -vRf "$input"/* "$input/build/mod"
       cd "$input" || exit
       wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
       tar xf renpy-6.99.12.4-sdk.tar.bz2
