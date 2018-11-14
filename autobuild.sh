@@ -78,29 +78,29 @@ pull_base_remote() {
     
     if [ -z "$(command -v mc)" ]; then
         echo " ---> Minio Client not present. Installing Minio S3 Client"
-        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O "$DIRECTORY/build/mc" && \
+        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O "$input/build/mc" && \
         chmod +x mc && \
-        export PATH="$DIRECTORY/build:$PATH" && \
-        "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-        "$DIRECTORY/build/mc" ls $mc_alias;
-        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$DIRECTORY/build/"
-        unzip  "$mc_filename" -d "$DIRECTORY/build/mod/game"
+        export PATH="$input/build:$PATH" && \
+        "$input/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        "$input/build/mc" ls $mc_alias;
+        "$input/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$input/build/"
+        unzip  "$mc_filename" -d "$input/build/mod/game"
         
-    elif [ -f "$DIRECTORY/build/mc" ]; then
+    elif [ -f "$input/build/mc" ]; then
         echo "Minio Client present in build. Exporting to PATH."
-        export PATH="$DIRECTORY/build:$PATH" && \
-        "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-        "$DIRECTORY/build/mc" ls $mc_alias;
-        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$DIRECTORY/build/"
-        unzip  "$mc_filename" -d "$DIRECTORY/build/mod/game"
+        export PATH="$input/build:$PATH" && \
+        "$input/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        "$input/build/mc" ls $mc_alias;
+        "$input/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$input/build/"
+        unzip  "$mc_filename" -d "$input/build/mod/game"
       else 
         echo " ---> Minio Client exists or Midnight Commander is present."
         echo " ---> Make sure Midnight Commander isn't installed since it causes issues with this script."
-        "$DIRECTORY/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        "$input/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
         # try if it works
-        "$DIRECTORY/build/mc" ls "$mc_alias";
-        "$DIRECTORY/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$DIRECTORY/build/"
-        unzip  $mc_filename -d "$DIRECTORY/build/mod/game"
+        "$input/build/mc" ls "$mc_alias";
+        "$input/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$input/build/"
+        unzip  $mc_filename -d "$input/build/mod/game"
     fi
 }
 
@@ -116,15 +116,15 @@ print_ddlc_base() {
         pull_base_remote;
       else
         echo " ---> $installation_dir exists. Pulling resources from there."
-        cp -vR "$installation_dir/game/audio.rpa" "$DIRECTORY/build";
-        cp -vR "$installation_dir/game/images.rpa" "$DIRECTORY/build";
-        cp -vR "$installation_dir/game/fonts.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir/game/audio.rpa" "$input/build";
+        cp -vR "$installation_dir/game/images.rpa" "$input/build";
+        cp -vR "$installation_dir/game/fonts.rpa" "$input/build";
       fi
     else
         echo " ---> $installation_dir_steam exists. Pulling resources from there."
-        cp -vR "$installation_dir_steam/game/audio.rpa" "$DIRECTORY/build";
-        cp -vR "$installation_dir_steam/game/images.rpa" "$DIRECTORY/build";
-        cp -vR "$installation_dir_steam/game/fonts.rpa" "$DIRECTORY/build";
+        cp -vR "$installation_dir_steam/game/audio.rpa" "$input/build";
+        cp -vR "$installation_dir_steam/game/images.rpa" "$input/build";
+        cp -vR "$installation_dir_steam/game/fonts.rpa" "$input/build";
    fi
 }
 
@@ -186,74 +186,72 @@ done
 if [ "$input" = '.' ]; then
   echo " ---> Building mod in your PWD context."
   echo " ---> Do you know you can also build other mods with this? Just type the absolute path of the mod and enter. Happy Modding!"
-  DIRECTORY="$(pwd)"
  else
   echo " ---> Building Mod in $input"
   echo " ---> If you have this builder script inside your own project folder, make sure you input your folder as ../FOLDERNAME or use '.'."
-  DIRECTORY="$input"
 fi
 
 
 sleep 3;
 
-if [ -d "$DIRECTORY/build" ]; then
+if [ -d "$input/build" ]; then
    echo " ---> Looks like this has built before. Checking if files exists"
-   if [ -f "$DIRECTORY/build/mc" ] && [ -d "$DIRECTORY/mod" ] &&  [ -d "$DIRECTORY/renpy" ] ; then
+   if [ -f "$input/build/mc" ] && [ -d "$input/mod" ] &&  [ -d "$input/renpy" ] ; then
       echo " ---> Looks like this has been built before. Rebuilding game instead."
-      cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
-      cd "$DIRECTORY/build/renpy" || exit
-      ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
+      cp -vRf "$input/*" "$input/build/mod"
+      cd "$input/build/renpy" || exit
+      ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
       cd ..
     else
       echo " ---> Looks like it's your first time building this mod. Here, I'll make it up to you~!"
-      if [ -f "$DIRECTORY/build/renpy-6.99.12.4-sdk.tar.bz2" ]; then
-          mkdir -p "$DIRECTORY/build/mod"
-          cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
-          cd "$DIRECTORY/build" || exit
+      if [ -f "$input/build/renpy-6.99.12.4-sdk.tar.bz2" ]; then
+          mkdir -p "$input/build/mod"
+          cp -vRf "$input/*" "$input/build/mod"
+          cd "$input/build" || exit
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
-          cd "$DIRECTORY/build" && "pull_ddlc_base";
-          cd "$DIRECTORY/build/renpy" || exit
-          ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
+          cd "$input/build" && "pull_ddlc_base";
+          cd "$input/build/renpy" || exit
+          ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
           cd ..
        else
-          mkdir -p "$DIRECTORY/build"
-          mkdir -p "$DIRECTORY/build/mod"
-          cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
-          cd "$DIRECTORY" || exit
+          mkdir -p "$input/build"
+          mkdir -p "$input/build/mod"
+          cp -vRf "$input/*" "$input/build/mod"
+          cd "$input" || exit
           wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
-          cd "$DIRECTORY/build" && pull_ddlc_base;
-          cd "$DIRECTORY/build/renpy" || exit
-          ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
+          cd "$input/build" && pull_ddlc_base;
+          cd "$input/build/renpy" || exit
+          ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
           cd ..
        fi
     fi
 else 
       echo " ---> Looks like it's your first time building this mod. Here, I'll make it up to you~!"
-      mkdir -p "$DIRECTORY/build"
-      mkdir -p "$DIRECTORY/build/mod"
-      cp -vRf "$DIRECTORY/*" "$DIRECTORY/build/mod"
-      cd "$DIRECTORY" || exit
+      mkdir -p "$input/build"
+      mkdir -p "$input/build/mod"
+      cp -vRf "$input/*" "$input/build/mod"
+      cd "$input" || exit
       wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
       tar xf renpy-6.99.12.4-sdk.tar.bz2
       rm renpy-6.99.12.4-sdk.tar.bz2
       mv renpy-6.99.12.4-sdk renpy
       rm -rf renpy-6.99.12.4-sdk
-      cd "$DIRECTORY/build" && pull_ddlc_base;
-      cd "$DIRECTORY/build/renpy" || exit
-      ./renpy.sh "$DIRECTORY/build/mod/" lint && ./renpy.sh launcher distribute "$DIRECTORY/build/mod/""$1"
+      cd "$input/build" && pull_ddlc_base;
+      cd "$input/build/renpy" || exit
+      ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
       cd ..
 fi
 
 case "$(exit $?)" in 
-  0) echo " ---> Build Successfully made. Find it at $DIRECTORY/build/ModXY-dists or similar. Happy modding!" && exit 0;
+  0) echo " ---> Build Successfully made. Find it at $input/build/ModXY-dists or similar. Happy modding!" && exit 0;
    ;;
-  *) echo "! -- Uh oh, we can't build your mod in $DIRECTORY. If this is a mistake, file a issue. Thank you." && exit 1;
+  *) echo "! -- Uh oh, we can't build your mod in $input. If this is a mistake, file a issue. Thank you." && exit 1;
    ;;
 esac
