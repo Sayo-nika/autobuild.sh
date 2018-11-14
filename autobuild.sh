@@ -78,20 +78,20 @@ pull_base_remote() {
     
     if [ -z "$(command -v mc)" ]; then
         echo " ---> Minio Client not present. Installing Minio S3 Client"
-        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O "$input/build/mc" && \
+        wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O "$input/build/mc" --quiet && \
         chmod +x mc && \
         export PATH="$input/build:$PATH" && \
-        "$input/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-        "$input/build/mc" ls $mc_alias;
-        "$input/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$input/build/"
+        $input/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        $input/build/mc ls $mc_alias;
+        $input/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" "$input"/build/
         unzip  "$mc_filename" -d "$input/build/mod/game"
         
     elif [ -f "$input/build/mc" ]; then
         echo "Minio Client present in build. Exporting to PATH."
         export PATH="$input/build:$PATH" && \
-        "$input/build/mc" config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
-        "$input/build/mc" ls $mc_alias;
-        "$input/build/mc" cp "$mc_alias/$mc_bucket/$mc_filename" "$input/build/"
+        $input/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
+        $input/build/mc ls $mc_alias;
+        $input/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" "$input"/build/        
         unzip  "$mc_filename" -d "$input/build/mod/game"
       else 
         echo " ---> Minio Client exists or Midnight Commander is present."
@@ -207,13 +207,14 @@ if [ -d "$input/build" ]; then
       if [ -f "$input/build/renpy-6.99.12.4-sdk.tar.bz2" ]; then
           mkdir -p "$input/build"
           mkdir -p "$input/build/mod"
+          pull_ddlc_base
           cp -vRf "$input"/* "$input/build/mod"
           cd "$input/build" || exit
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
-          cd "$input/build" && pull_ddlc_base;
+          cd "$input/build"
           cd "$input/build/renpy" || exit
           ./renpy.sh "../build/mod/" lint && ./renpy.sh launcher distribute "../build/mod/""$1"
           cd ..
@@ -221,13 +222,14 @@ if [ -d "$input/build" ]; then
           mkdir -p "$input/build"
           mkdir -p "$input/build/mod"
           cp -vRf "$input"/* "$input/build/mod"
+          pull_ddlc_base
           cd "$input" || exit
           wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
-          cd "build" && pull_ddlc_base;
+          cd build
           cd "build/renpy" || exit
           ./renpy.sh "../build/mod/" lint && ./renpy.sh launcher distribute "../build/mod/""$1"
           cd ..
@@ -238,13 +240,14 @@ else
       mkdir -p "$input/build"
       mkdir -p "$input/build/mod"
       cp -vRf "$input"/* "$input/build/mod"
+      pull_ddlc_base
       cd "$input" || exit
       wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
       tar xf renpy-6.99.12.4-sdk.tar.bz2
       rm renpy-6.99.12.4-sdk.tar.bz2
       mv renpy-6.99.12.4-sdk renpy
       rm -rf renpy-6.99.12.4-sdk
-      cd build && pull_ddlc_base;
+      cd build 
       cd build/renpy || exit
       ./renpy.sh "../build/mod/" lint && ./renpy.sh launcher distribute "../build/mod/""$1"
       cd ..
