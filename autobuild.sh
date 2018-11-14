@@ -244,8 +244,8 @@ else
       rm renpy-6.99.12.4-sdk.tar.bz2
       mv renpy-6.99.12.4-sdk renpy
       rm -rf renpy-6.99.12.4-sdk
-      cd "$input/build" && pull_ddlc_base;
-      cd "$input/build/renpy" || exit
+      cd build && pull_ddlc_base;
+      cd build/renpy || exit
       ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
       cd ..
 fi
