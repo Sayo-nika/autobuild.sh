@@ -148,7 +148,7 @@ case "$1" in
          print_help
          exit 2;
       else
-        if [ "echo $2 | grep $regex >/dev/null 2>&1" ] ||  [ -z "$2" ]; then
+        if [ echo "$2" | grep $regex >/dev/null 2>&1 ] ||  [ -z "$2" ]; then
           echo "! -- Error: Invalid input. Try again."
           exit 2;
         elif [ ! -d "$2" ]; then
@@ -174,7 +174,7 @@ case "$1" in
 esac
 # Really needed Type Checks
 
-while [ echo "$input" | grep $regex >/dev/null 2>&1 ]  ||  [ -z "$input" ] ; do
+while [ echo "$input" | grep $regex >/dev/null 2>&1 ]  ||  [ ! -n "$input" ] ; do
   echo "! -- Error: Invalid input. Try again."
   read -p  "Enter your mod's Location (use . if you have this script inside your mod folder): " input
 done
