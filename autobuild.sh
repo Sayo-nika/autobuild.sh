@@ -84,7 +84,7 @@ pull_base_remote() {
         $input/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
         $input/build/mc ls $mc_alias;
         $input/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" "$input"/build/
-        unzip  "$input/build/$mc_filename" -d "$input/build/mod/game"
+        unzip -o "$input/build/$mc_filename" -d "$input/build/mod/game"
         
     elif [ -f "$input/build/mc" ]; then
         echo "Minio Client present in build. Exporting to PATH."
@@ -92,7 +92,7 @@ pull_base_remote() {
         $input/build/mc config host add $mc_alias $mc_endpoint $mc_hmac_key $mc_hmac_secret && \
         $input/build/mc ls $mc_alias;
         $input/build/mc cp "$mc_alias/$mc_bucket/$mc_filename" "$input"/build/        
-        unzip  "$input/build/$mc_filename" -d "$input/build/mod/game"
+        unzip -o "$input/build/$mc_filename" -d "$input/build/mod/game"
       else 
         echo " ---> Minio Client exists or Midnight Commander is present."
         echo " ---> Make sure Midnight Commander isn't installed since it causes issues with this script."
@@ -100,7 +100,7 @@ pull_base_remote() {
         # try if it works
         $(command -v mc) ls "$mc_alias";
         $(command -v mc) cp "$mc_alias/$mc_bucket/$mc_filename" "$input/build/"
-        unzip  "$input/build/$mc_filename" -d "$input/build/mod/game"
+        unzip -o "$input/build/$mc_filename" -d "$input/build/mod/game"
     fi
 }
 
