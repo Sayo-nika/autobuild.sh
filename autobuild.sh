@@ -106,7 +106,7 @@ pull_base_remote() {
 
 print_ddlc_base() {
    if [ ! -d "$installation_dir_steam" ]; then
-      if [ "$os" = "linux" ]; then
+      if [ "$os" -eq "linux" ]; then
          "! -- Skipping vanilla installation dir. Pulling from remote now."
         pull_base_remote;
       fi 
