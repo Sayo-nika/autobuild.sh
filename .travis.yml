@@ -13,7 +13,10 @@ addons:
 before_install:
      - command -v wget
      - command -v curl
-     
+     - wget https://dl.minio.io/client/mc/release/linux-amd64/mc
+     - chmod -R 755 mc
+     - sudo cp -vRf mc /usr/bin
+
 install:
     - cd ..
     - git clone https://github.com/Sayo-nika/BraveSail --depth=50
