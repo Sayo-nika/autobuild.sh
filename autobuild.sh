@@ -39,8 +39,9 @@ case "$os" in
           echo "! -- Autobuild only works at user accounts, not root!"
           exit 2;
         else
-          installation_dir="$HOME/ddlc/"
+          echo "! -- We only support steam in Linux."
           installation_dir_steam="$HOME/.local/share/Steam/steamapps/common/doki doki literature club"
+          installation_dir="$installation_dir_steam"
         fi
        ;;
     windows)
@@ -76,7 +77,7 @@ pull_base_remote() {
     
     printf " ---> Checking if Minio S3 is present to pull DDLC resources.\n"
     
-    if [ -z "$(command -v mc)" ]; then
+    if [ ! -n "$(command -v mc)" ]; then
         echo " ---> Minio Client not present. Installing Minio S3 Client"
         wget "https://dl.minio.io/client/mc/release/linux-amd64/mc" -O "$DIRECTORY/build/mc" && \
         chmod +x mc && \
@@ -106,6 +107,10 @@ pull_base_remote() {
 
 print_ddlc_base() {
    if [ ! -d "$installation_dir_steam" ]; then
+      if [ "$os" -eq "linux" ]; then
+         "! -- Skipping vanilla installation dir. Pulling from remote now."
+        pull_base_remote;
+      fi 
       echo "! -- $installation_dir_steam does not exist. Trying your local non-steam installation.";
       if [ !  -d "$installation_dir" ]; then
         echo "! --  $installation_dir does not exist. Pulling from remote instead.";
@@ -169,7 +174,7 @@ case "$1" in
 esac
 # Really needed Type Checks
 
-while [ "echo $input | grep $regex >/dev/null 2>&1" ]  ||  [ -z "$input" ] ; do
+while [ echo "$input" | grep $regex >/dev/null 2>&1 ]  ||  [ -z "$input" ] ; do
   echo "! -- Error: Invalid input. Try again."
   read -p  "Enter your mod's Location (use . if you have this script inside your mod folder): " input
 done
