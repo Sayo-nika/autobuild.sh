@@ -2,8 +2,18 @@ language: python
 python:
     - "2.7"
 
+
 sudo: required
 
+addons:
+  apt:
+    packages:
+          - wget
+
+before_install:
+     - command -v wget
+     - command -v curl
+     
 install:
     - cd ..
     - git clone https://github.com/Sayo-nika/BraveSail --depth=50
