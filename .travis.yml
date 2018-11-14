@@ -6,7 +6,7 @@ sudo: required
 
 install:
     - cd ..
-    - git clone https://github.com/Sayo-nika/BraveSail
+    - git clone https://github.com/Sayo-nika/BraveSail --bare --depth=50
 
 env:
 

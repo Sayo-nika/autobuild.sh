@@ -172,7 +172,6 @@ case "$1" in
     ;;
 esac
 # Really needed Type Checks
-
 while [ $(echo $input | grep $regex >/dev/null 2>&1) ]  ||  [ -z "$input" ] ; do
   echo "! -- Error: Invalid input. Try again."
   read -p  "Enter your mod's Location (use . if you have this script inside your mod folder): " input
@@ -189,7 +188,7 @@ if [ "$input" = '.' ]; then
   echo " ---> Do you know you can also build other mods with this? Just type the absolute path of the mod and enter. Happy Modding!"
   DIRECTORY="$(pwd)"
  else
-  echo " ---> Building Mod in $DIRECTORY"
+  echo " ---> Building Mod in $input"
   echo " ---> If you have this builder script inside your own project folder, make sure you input your folder as ../FOLDERNAME or use '.'."
   DIRECTORY="$input"
 fi
