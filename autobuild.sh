@@ -104,7 +104,7 @@ pull_base_remote() {
     fi
 }
 
-print_ddlc_base() {
+pull_ddlc_base() {
    if [ ! -d "$installation_dir_steam" ]; then
       if [ "$os" -eq "linux" ]; then
          "! -- Skipping vanilla installation dir. Pulling from remote now."
@@ -213,9 +213,9 @@ if [ -d "$input/build" ]; then
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
-          cd "$input/build" && "pull_ddlc_base";
+          cd "$input/build" && pull_ddlc_base;
           cd "$input/build/renpy" || exit
-          ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
+          ./renpy.sh "../build/mod/" lint && ./renpy.sh launcher distribute "../build/mod/""$1"
           cd ..
        else
           mkdir -p "$input/build"
@@ -227,9 +227,9 @@ if [ -d "$input/build" ]; then
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
           rm -rf renpy-6.99.12.4-sdk
-          cd "$input/build" && pull_ddlc_base;
-          cd "$input/build/renpy" || exit
-          ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
+          cd "build" && pull_ddlc_base;
+          cd "build/renpy" || exit
+          ./renpy.sh "../build/mod/" lint && ./renpy.sh launcher distribute "../build/mod/""$1"
           cd ..
        fi
     fi
@@ -246,7 +246,7 @@ else
       rm -rf renpy-6.99.12.4-sdk
       cd build && pull_ddlc_base;
       cd build/renpy || exit
-      ./renpy.sh "$input/build/mod/" lint && ./renpy.sh launcher distribute "$input/build/mod/""$1"
+      ./renpy.sh "../build/mod/" lint && ./renpy.sh launcher distribute "../build/mod/""$1"
       cd ..
 fi
 
